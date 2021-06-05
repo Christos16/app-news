@@ -1,0 +1,12 @@
+{
+  "name": "crypo-listing-app",
+  "displayName": "crypo-listing-app",
+  "expo": {
+    "name": "crypo-listing-app",
+    "slug": "crypo-listing-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
