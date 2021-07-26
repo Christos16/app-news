@@ -19,12 +19,13 @@ const TabNavigator = () => (
             return (
               <FontIcon
                 name="home"
-                color={focused ? "#00aad4" : colors.gray}
+                color={focused ? "black" : colors.gray}
                 size={20}
                 solid
               />
             )
-          case 'Profile':
+            {/* 
+                    case 'Profile':
             return (
               <FontIcon
                 name="user"
@@ -42,13 +43,15 @@ const TabNavigator = () => (
                 solid
               />
             )
+            */}
+  
           default:
             return <View />
         }
       },
     })}
     tabBarOptions={{
-      activeTintColor: "#00aad4",
+      activeTintColor: "black",
       inactiveTintColor: colors.gray,
       style: {
         // backgroundColor: 'white',
@@ -62,8 +65,12 @@ const TabNavigator = () => (
     swipeEnabled={false}
   >
     <Tab.Screen name="Home" component={HomeNavigator} />
-    <Tab.Screen name="Profile" component={ProfileNavigator} />
+
+{/* 
+ <Tab.Screen name="Profile" component={ProfileNavigator} />
     <Tab.Screen name="Login" component={AuthNavigator} />
+*/}
+   
   </Tab.Navigator>
 )
 

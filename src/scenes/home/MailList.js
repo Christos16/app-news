@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, Text, View, ScrollView,TouchableOpacity, Dimensions, Animated, Modal, SafeAreaView
+  StyleSheet, Text, View, ScrollView, Dimensions, Animated, Modal, SafeAreaView
 } from 'react-native'
 import Button from 'components/Button'
 import { colors } from 'theme'
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import SingleMessage from './SingleMessage';
 import { FlatList } from 'react-native-gesture-handler';
-import ComposeMail from './ComposeMail';
+import ModalArticles from './ModalArticles';
 import ActionButton from 'react-native-action-button';
 import tailwind from 'tailwind-rn';
 import Carousel from 'react-native-snap-carousel';
@@ -57,7 +57,7 @@ const MailList = ({ navigation }) => {
     const offset = 10
     const { topHeadlines } = useSelector((state) => state.app)
     const [modal, setModal] = useState(false)
-    const [selectedCategory, setSelectedCategory] = useState("Breaking")
+    const [selectedCategory, setSelectedCategory] = useState("Business")
   const [activeIndex, setIndex] = useState(0)
   const dispatch = useDispatch()
 
@@ -89,14 +89,10 @@ const MailList = ({ navigation }) => {
   
 
     function handleSearchByCategory(category) {
-      console.log("TRIGGERED")
-      console.log(category)
+      
       setSelectedCategory(category)
      return (dispatch) => {
        //  dispatch(handleLoadState(true));
-   
-    
-   
        const request = axios.get(
          `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=ac66bc13be8b4a5bad780c4bee9da43d`,
        );
@@ -115,18 +111,19 @@ const MailList = ({ navigation }) => {
    }
 
 
+
  
       return (
         <Button onPress={() => dispatch(handleSearchByCategory(item.title))} style={{
             backgroundColor: selectedCategory === item.title ? 'black' : "lightblue",
             borderRadius: 25,
            // height: 80,
-        //  height: 50,
+       // height: 50,
         textAlign:"center",
         flexDirection: "row",
         alignContent: "center",
         alignItems: "center",        
-            padding: 10,
+            padding: 5,
            // marginLeft: 5,
             marginRight: 5, 
             }}>
@@ -169,31 +166,62 @@ marginLeft: "auto", marginRight: "auto"   }}>{item.title}</Text>
             onRequestClose={() => {
             }}
           >
-            <ComposeMail onPress={() => setModal(false)} />
+            <ModalArticles navigation={navigation} articles={topHeadlines} onPress={() => setModal(false)} />
           </Modal>
       }
+
+    
+      const renderCategoryArticles = () => {
+        return (
+          <SafeAreaView style={tailwind("text-center")}>
+          <View style={{  flexDirection:'row', justifyContent: 'center', textAlign: "center" }}>
+             <SingleMessage categoryArticle={true} navigation={navigation} item={topHeadlines[0]} />
+          </View>
+        </SafeAreaView>
+        )
+      }
+
       
 
     return (
-        <Animated.View>
-          <View style={{width: width - 20, backgroundColor: "whitesmoke", borderRadius: 20, padding: 10, marginLeft: "auto", marginRight: "auto", marginTop: 20}}>
-        <Text style={tailwind("text-4xl p-4 mb-2 font-bold  tracking-widest")}>Browse</Text>
-        <SafeAreaView style={tailwind("text-center mb-8")}>
-            <View style={{  flexDirection:'row', justifyContent: 'center', textAlign: "center" }}>
+        <ScrollView>
+          <View style={{width: width - 20, backgroundColor: "whitesmoke", borderRadius: 20,padding: 20, marginLeft: "auto", marginRight: "auto", marginTop: 20}}>
+        <Text style={tailwind("text-3xl mb-2 font-bold  tracking-widest")}>Browse</Text>
+        <SafeAreaView style={tailwind("text-center ")}>
+            <View style={{  flexDirection:'row', justifyContent: 'center', textAlign: "center",  }}>
     
                 <Carousel
                   layout={"default"}
              //    ref={ref => thiscarousel = ref}
                   data={carouselItems}
-                  sliderWidth={150 }
+                  sliderWidth={120 }
                   itemWidth={130}
-                  itemHeight={120}
+                  itemHeight={20}
                   renderItem={renderItem}
                   onSnapToItem = { index => setIndex(index) } />
             </View>
           </SafeAreaView>
           </View>
-          <Text style={tailwind("text-2xl p-4 font-bold tracking-widest")}>TRENDING</Text>
+
+          {selectedCategory && 
+          <>
+                    <View style={tailwind("flex-row justify-between p-4")}>
+            <Text style={tailwind("text-2xl  font-bold tracking-widest")}>{selectedCategory}</Text>
+
+<Button backgroundColor="black" color="white" style={tailwind("text-white rounded text-base flex-col h-8 bg-black-500 font-bold items-center")} title="See all" onPress={() => setModal(true)}></Button>
+</View>
+
+{renderCategoryArticles()}
+
+</>
+          }
+        
+
+          <View style={tailwind("flex-row justify-between p-4 mt-8")}>
+          <Text style={tailwind("text-2xl  font-bold tracking-widest")}>TRENDING</Text>
+
+          <Button backgroundColor="black" color="white" style={tailwind("text-white rounded text-base flex-col h-8 bg-black-500 font-bold items-center")} title="See all"  onPress={() => setModal(true)}></Button>
+          </View>
           {/*  <FlatList data={topHeadlines} keyExtractor={item => item.title} renderItem={renderRow}
 
  />*/}
@@ -214,10 +242,10 @@ marginLeft: "auto", marginRight: "auto"   }}>{item.title}</Text>
           </SafeAreaView>
 
    
-    {renderFOB()}
+    {/*renderFOB()*/}
  
     {renderModal()}
-        </Animated.View>
+        </ScrollView>
     
       );
 

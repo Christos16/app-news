@@ -18,17 +18,18 @@ const HeaderRight = ({ navigation, name }) => {
 
   const { openModal } = useSelector(state => state.app);
 
+
   return (
     <>
       {name ? (
-        <Button
+        <View
           onPress={() => dispatch(handleModal({ openModal: !openModal }))}
           style={tailwind(
             'rounded bg-gray-400 p-2 w-8 flex  items-center text-center mr-2 mb-2 h-8'
           )}
         >
           <FontIcon name='ellipsis-v' color={'white'} size={15} solid />
-        </Button>
+        </View>
       ) : (
         <View
           style={tailwind(

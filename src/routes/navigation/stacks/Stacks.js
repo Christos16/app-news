@@ -76,7 +76,7 @@ export const HomeNavigator = () => (
     />
   
     <Stack.Screen
-      name="Message"
+      name="Details"
       component={Details}
       options={({ navigation, route }) => ({ 
         title: route.params && route.params.name && route.params.name,

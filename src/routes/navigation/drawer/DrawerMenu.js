@@ -6,6 +6,10 @@ import { DrawerActions } from '@react-navigation/native'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import { colors } from 'theme'
 import tailwind from 'tailwind-rn';
+import { useDispatch } from 'react-redux';
+import { handleSearch } from '../../../slices/app.slice';
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
+import axios from "axios"
 
 const styles = {
   root: {
@@ -21,14 +25,54 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    marginLeft: 20,
+   // marginLeft: 20,
     fontWeight: "bold",
-    fontSize: 25
+    fontSize: 12
    // alignItems: 'center',
   },
+  category: {
+    flexDirection: "row", marginBottom:10, fontWeight: "bold", backgroundColor: "black",
+    paddingTop: 10, paddingBottom: 10, 
+  }
 }
 
-const DrawerMenu = (props) => (
+
+
+const DrawerMenu = (props) => {
+
+  const dispatch = useDispatch()
+
+
+  function handleSearchByCategory(value) {
+    return (dispatch) => {
+      console.log(value)
+      //  dispatch(handleLoadState(true));
+      const request = axios.get(`
+      https://newsapi.org/v2/top-headlines?country=us&category=${value}&apiKey=ac66bc13be8b4a5bad780c4bee9da43d`)
+      request
+        .then((response) => {
+        
+          dispatch(searchByText({ topHeadlines: response.data.articles }))
+          // dispatch(setActiveStep())
+        })
+        .catch((error) => {
+          //dispatch(handleLoadState(false));
+          console.log(error, "ERROR");
+        });
+    };
+   }
+
+  const handleSelect = (value) =>  {
+    dispatch(handleSearch(value))
+    dispatch(handleSearchByCategory(value))
+   
+    props.navigation.dispatch(DrawerActions.closeDrawer())
+    
+  }
+
+
+  return (
+
   <SafeAreaView style={styles.root}>
     <View style={styles.head}>
       <FontIcon.Button
@@ -42,54 +86,77 @@ const DrawerMenu = (props) => (
       />
     </View>
     <View style={styles.main}>
+    <Text style={tailwind("text-xl mb-2 ml-2 font-bold  tracking-widest")}>Search by category:</Text>
     <View style={tailwind("font-bold  rounded-xl radius h-auto mt-2 bg-white")}>
-    <View style={{flexDirection: "row", marginBottom:20, fontWeight: "bold"}}>
-<FontIcon name="eye-slash" style={tailwind("text-xl font-black")} size={15} /> 
-<Text style={tailwind("ml-2 text-xl font-bold")}>Mark as unread</Text>
-    </View>
-    <View style={{flexDirection: "row", marginBottom:20, fontSize: 20}}>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Business")
+        }}>
+<FontIcon name="briefcase" style={tailwind("text-xl ml-2 text-white")} size={15} /> 
+<Text style={tailwind("ml-2 text-xl font-bold text-white")}>Business</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Technology")
+        }}>
     
-<FontIcon name="flag" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Own</Text>
-    </View>
-        <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="pen" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>New Message</Text>
-    </View>
-        <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="copy" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Copy</Text>
-    </View>
-        <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="edit" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Edit</Text>
-    </View>
-        <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="share" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Forward</Text>
-    </View>
-    <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="reply" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Reply</Text>
-    </View>
-    <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="reply-all" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Reply All</Text>
-    </View>
-    <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="exclamation-triangle" style={tailwind("text-xl font-black")}  /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Error Info</Text>
-    </View>
+<FontIcon name="microship" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Technology</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Politics")
+        }}>
+<FontIcon name="landmark" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Politics</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Sports")
+        }}>
+<FontIcon name="futbol" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Sports</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Europe Markets")
+        }}>
+<FontIcon name="global-europe" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Europe Markets</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Us markets")
+        }}>
+<FontIcon name="flag-usa" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Us Markets</Text>
+    </TouchableOpacity>
+  <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Asia Markets")
+        }}>
+<FontIcon name="global-asia" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Asia Markets</Text>
+    </TouchableOpacity>
+  <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Energy")
+        }}>
+<FontIcon name="solar-panel" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Energy</Text>
+    </TouchableOpacity>
+  <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Economy")
+        }}>
+<FontIcon name="chart-line" style={tailwind("text-xl  ml-2 text-white")} /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Economy</Text>
+    </TouchableOpacity>
+  <TouchableOpacity style={styles.category}   onPress={() => {
+         handleSelect("Cryptocurrency")
+        }}>
+<FontIcon name="bitcoin" style={tailwind("text-xl  ml-2 text-white")}  /> 
+<Text style={tailwind("ml-2 font-bold text-white text-xl")}>Cryptocurrency</Text>
+    </TouchableOpacity>
 
-    <View style={{flexDirection: "row", marginBottom:20}}>
-<FontIcon name="sign-out-alt" style={tailwind("text-xl font-black")} /> 
-<Text style={tailwind("ml-2 font-bold text-xl")}>Log Out</Text>
-    </View>
 
     </View>
     </View>
   </SafeAreaView>
-)
+
+  )
+}
 
 DrawerMenu.propTypes = {
   navigation: PropTypes.shape({

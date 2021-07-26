@@ -1,12 +1,18 @@
 {
-  "name": "crypo-listing-app",
-  "displayName": "crypo-listing-app",
+  "name": "smartnews-app",
+  "displayName": "smartnews-app",
   "expo": {
-    "name": "crypo-listing-app",
-    "slug": "crypo-listing-app",
+    "name": "smartnews-app",
+    "slug": "smartnews-app",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.christosmalamas.smartnewsapp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.christosmalamas.smartnewsapp"
+    }
   }
 }

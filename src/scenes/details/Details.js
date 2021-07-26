@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, Text, View, StatusBar,Image, Dimensions, ScrollView
@@ -9,9 +9,11 @@ import tailwind from "tailwind-rn"
 import ActionButton from 'react-native-action-button';
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleModal } from '../../slices/app.slice';
+import { handleOpenWebView } from '../../slices/app.slice';
+import moment from "moment"
+import { WebView } from 'react-native-webview';
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   root: {
@@ -45,17 +47,15 @@ const styles = StyleSheet.create({
 
 const Details = ({ route, navigation }) => {
 
-  const dispatch = useDispatch()
 
-
-
-  const from = route;
-  const offset = 25;
-  console.log(from.params)
+  const offset = 5;
+const dispatch = useDispatch()
 
   const { openModal } = useSelector((state) => state.app)
+  const { openWebView } = useSelector(state => state.app);
 
-  console.log(openModal, "OPen Modal")
+console.log(openWebView, "OPEN WEB VIEW")
+
 
   const renderFOB = () => {
     return <ActionButton
@@ -124,6 +124,16 @@ const newModal = () => {
     </View>
   )
 }
+
+
+const renderWebView = () => {
+  return (
+    <View style={{ height: height - 150, width: width}}>
+  <WebView  source={{uri: route.params.item.url}}/>
+    </View>
+  )
+}
+
   return (
     <>
     <ScrollView
@@ -137,28 +147,29 @@ const newModal = () => {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
    <View style={(tailwind("bg-gray-200 rounded-md p-5 "))}>
-   <Text style={(tailwind("text-xl font-medium tracking-wide text-gray-600 mb-2 "))} >TradeWinds</Text>
-<Text style={(tailwind("text-2xl font-medium tracking-wide text-gray-800 mb-2"))} >Dailys News Update for the month of August. Important</Text>
-  <Text style={(tailwind("text-xs text-gray-600"))}>Tue, 30 Aug 2016 10:00</Text>
+   <Text style={(tailwind("text-xl font-medium tracking-wide text-gray-600 mb-2 "))} >{route.params.item.author}</Text>
+<Text style={(tailwind("text-2xl font-medium tracking-wide text-gray-800 mb-2"))} >{route.params.item.title}</Text>
+  <Text style={(tailwind("text-xs text-gray-600"))}>{moment(route.params.item.publishedAt).format("LLLL")}</Text>
    </View>
    <View style={tailwind("p-5")}>
    <Image source={{
-  uri:"https://images.unsplash.com/photo-1598194501777-edbff942e501?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
+  uri:route.params.item.urlToImage,
         }}  style={styles.image}/>
 
         <Text style={tailwind("mt-4 text-gray-600 text-base dark:text-gray-300")}>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut quia asperiores alias vero magnam recusandae adipisci ad vitae laudantium quod rem voluptatem eos accusantium cumque.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut quia asperiores alias vero magnam recusandae adipisci ad vitae laudantium quod rem voluptatem eos accusantium cumque.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut quia asperiores alias vero magnam recusandae adipisci ad vitae laudantium quod rem voluptatem eos accusantium cumque.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut quia asperiores alias vero magnam recusandae adipisci ad vitae laudantium quod rem voluptatem eos accusantium cumque.
+      {route.params.item.description}
         </Text>
         </View>
-
-
+<View style={tailwind("p-5")}>
+<Button backgroundColor="black" style={tailwind("p-4 text-center")} onPress={() => dispatch(handleOpenWebView({ openWebView: !openWebView }))}>
+  <Text style={tailwind("text-center text-base text-white")}>Read the full article</Text>
+</Button>
+</View>
     </View>
     </ScrollView>
     {renderFOB(navigation)}
     {openModal && newModal()}
+    {openWebView && renderWebView()}
     </>
   )
 }
